@@ -1,4 +1,3 @@
-#! /usr/bin/ruby
 require 'json'
 require 'open-uri'
 
@@ -37,9 +36,10 @@ def start
   curr_path = File.expand_path(File.dirname(__FILE__))
 
   # if image already exists in the current directory, exit the script
-  if File.exists? "#{curr_path}/#{filename}":
+  if File.exists? "#{curr_path}/#{filename}"
     puts "Hottest image is already background"
     exit 0
+  end
 
   # download the image to the current directory
   open(imgurl) {|f|
