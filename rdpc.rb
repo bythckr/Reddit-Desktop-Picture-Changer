@@ -21,25 +21,40 @@ def start
   i=0
   until i==25
     imgurl = body["data"]["children"][i]["data"]["url"]
-    break if imgurl.include? "jpg" or imgurl.include? "png" or imgurl.include? "gif"
-    i+=1
+    if imgurl.include? "jpg" or imgurl.include? "png" or imgurl.include? "gif"
+
+      # get the image file name
+      img = imgurl.split("/")
+      img = img.last
+
+      # add the name of the sub-reddit as a prefix to the image file name
+      filename = "#{reddit}-#{img}"
+
+      # get current path
+      curr_path = File.expand_path(File.dirname(__FILE__))
+
+      # if image already exists in the current directory, exit the script
+      if File.exists? "#{curr_path}/#{filename}"
+        puts "#{filename} has already been downloaded."
+
+        # look for the next image file if hottest bg is already set?
+        puts "Do you want to look for the next image? y/n"
+        if gets.strip == "y"
+          i+=1
+        else
+          exit 0
+        end
+      else
+        break
+      end
+
+    else
+      i+=1
+    end
+
   end
 
-  # get the image file name
-  img = imgurl.split("/")
-  img = img.last
-
-  # add the name of the sub-reddit as a prefix to the image file name
-  filename = "#{reddit}-#{img}"
-
-  # get current path
-  curr_path = File.expand_path(File.dirname(__FILE__))
-
-  # if image already exists in the current directory, exit the script
-  if File.exists? "#{curr_path}/#{filename}"
-    puts "Hottest image is already background"
-    exit 0
-  end
+  puts "Downloading image..."
 
   # download the image to the current directory
   open(imgurl) {|f|
